@@ -1,0 +1,164 @@
+<style type="text/css">
+    /* required style*/
+
+    .none {
+        display: none;
+    }
+
+    /* optional styles */
+
+    table tr th,
+    table tr td {
+        font-size: 1.2rem;
+    }
+
+    .row {
+        margin: 20px 20px 20px 20px;
+        width: 100%;
+    }
+
+    .glyphicon {
+        font-size: 20px;
+    }
+
+    .glyphicon-plus {
+        float: right;
+    }
+
+    a.glyphicon {
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .glyphicon-trash {
+        margin-left: 10px;
+    }
+
+    .alert {
+        width: 80%;
+        border-radius: 0;
+        margin-top: 10px;
+        margin-left: 10px;
+    }
+</style>
+
+<div class="container" ng-controller="courseCtrl" ng-init="getCourses()">
+    <h2>Courses</h2>
+    <div class="form-row">
+        <a href="javascript:void(0);" class="btn btn-primary fa fa-plus" ng-click="newData()"
+            ng-if="authService.isUserLoggedIn()"> เพิ่มรายวิชา</a> 
+        <button ng-click="CurrentView = 'list'" class="btn btn-default"><i class="fa fa-th"></i></button> 
+        <button ng-click="CurrentView = 'detail'" class="btn btn-default"><i class="fa fa-list"></i> </button> 
+        <input type="search" ng-model="query" placeholder="Search" class="form-control col-sm-4"> 
+    </div>
+    <div class="alert alert-danger none">
+        <p></p>
+    </div>
+    <div class="alert alert-success none">
+        <p></p>
+    </div>
+    <div id="div-datatable">
+        <div ng-switch="CurrentView">
+            <div ng-switch-when="list">
+                <div class="card-columns">
+                    <div class="card" ng-repeat="list in courses| filter: query">
+                        <div class="card-block">
+                            <h2 class="card-title"> <a href="#/course/{{list.course_id}}">{{list.course_id}} :
+                                    {{list.title}}</a> ({{list.credit}}-{{list.theory}}-{{list.practice}})
+                                {{list.level}}</h2>
+                            <p class="card-text">
+                                <div ng-bind-html="list.description"> </div>
+                            </p>
+                            <p ng-if="authService.isUserLoggedIn()">
+                                <a href="#/downloadUpload/{{list.id}}" class="card-link"><i
+                                        class="fa fa-file-pdf-o"></i></a>
+                                <a href="" ng-click="editData(list)" class="card-link"><i class="fa fa-edit"></i></a>
+                                <a href="" ng-click="delData(list)" class="card-link"><i class="fa fa-trash-o"></i></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-switch-when="detail">
+                <div class="row" ng-repeat="c in courses| orderBy:'-created'| filter: query">
+                    <div class="col-sm-1">
+                        {{$index + 1}}
+                    </div>
+                    <div class="col-sm-3">
+                        <a href="#/course/{{c.course_id}}">{{c.course_id}} : {{c.title}}</a>
+                    </div>
+                    <div class="col-sm-5">
+                        <div ng-bind-html="c.description"> </div>
+                    </div>
+                    <div class="col-sm-1">
+                        ({{c.credit}}-{{c.theory}}-{{c.practice}})
+                    </div>
+                    <div class="col-sm-1">
+                        {{c.level}}
+                    </div>
+                    <div class="col-sm-1" ng-if="authService.isUserLoggedIn() ">
+                        <a href="javascript:void(0);" class="fa fa-edit" ng-click="editData(c)"></a>
+                        <a href="javascript:void(0);" class="fa fa-trash" ng-click="deleteData(c)"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="div-editbox" style="display:none">
+        <form class="form-horizontal" name="courseForm">
+            <div class="form-row">
+                <div class="form-group col-sm-4">
+                    <label class="control-label">รหัสวิชา</label>
+                    <input type="text" class="form-control" name="course_id" ng-model="frm.course_id" />
+                </div>
+                <div class="form-group col-sm-8">
+                    <label class="control-label">ชื่อวิชา</label>
+                    <input type="text" class="form-control" name="title" ng-model="frm.title" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-12">
+                    <label class="control-label">คำอธิบายรายวิชา</label>
+                    <!--  <div text-angular ng-model="frm.description" name="demo-editor"
+                        ta-text-editor-class="clearfix border-around container" ta-html-editor-class="border-around">
+                    </div> -->
+                    <wysiwyg textarea-id="question" textarea-class="form-control" textarea-height="250px"
+                        textarea-name="textareaQuestion" textarea-required ng-model="frm.description"
+                        enable-bootstrap-title="true" textarea-menu="menu" disabled="disabled">
+                    </wysiwyg>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-4">
+                    <label class="control-label">หน่วยกิต</label>
+                    <input type="text" class="form-control" name="credit" ng-model="frm.credit" />
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="control-label">ทฤษฎี</label>
+                    <input type="text" class="form-control" name="theory" ng-model="frm.theory" />
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="control-label">ปฎิบัติ</label>
+                    <input type="text" class="form-control" name="practice" ng-model="frm.practice" />
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="level" class="control-label">ระดับชั้น</label>
+                    <select ng-model="frm.level" class="form-control">
+                        <option value="ปวช.">ปวช.</option>
+                        <option value="ปวส.">ปวส.</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row-sm-10">
+                <!-- <a href="javascript:void(0);" class="btn btn-warning" ng-click="cancelData()"
+                    onClick="$('#div-editbox').slideUp();">Cancel</a>
+                <a href="javascript:void(0);" class="btn btn-success" ng-hide="frm.id" ng-click="addCourse()">Save</a>
+                <a href="javascript:void(0);" class="btn btn-success" ng-hide="!frm.id" ng-click="updateCourse()">Update
+                    Course</a> -->
+                <button class="btn btn-primary" ng-click="saveData(frm)"
+                    ng-disabled="frm.course_id == '' || frm.title == ''"> Save </button>
+                <button class="btn btn-warning" ng-click="cancelData()"> Cancel </button>
+            </div>
+        </form>
+    </div>
+</div>

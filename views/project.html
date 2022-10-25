@@ -1,0 +1,145 @@
+<div ng-controller="projectCtrl" ng-init="getProjects()">
+    <h2>Projects</h2>
+    <div class="row">
+        <div class="col-sm-6">
+            <button class="btn btn-primary" ng-click="newData()"
+                ng-if="authService.isUserLoggedIn()">เพิ่มโครงงาน</button>
+            <button ng-click="CurrentView = 'list'" class="btn btn-default"><i class="fa fa-th"></i></button>
+            <button ng-click="CurrentView = 'detail'" class="btn btn-default"><i class="fa fa-list"></i> </button>
+        </div>
+        <div class="col-sm-6">
+            <input type="search" ng-model="query" placeholder="Search" class="form-control">
+        </div>
+    </div>
+    <div id="div-datatable">
+        <div ng-switch="CurrentView">
+            <div ng-switch-when="list">
+                <div class="card-columns">
+                    <div class="card" ng-repeat="list in projects| filter: query">
+<!--                         <img src='./public/project/title/{{list.filename}}' class="card-img img-fluid"
+                            ng-if="list.filename != ''">
+                        <img src="./public/images/nopic.jpg" class="card-img img-fluid" ng-if="list.filename == ''"> -->
+                        <div class="card-block">
+                            <p class="card-title"> <a href="#/project/{{list.id}}">{{list.title}}</a> </p>
+                            <p class="card-text"> {{list.abstract}} </p>
+                            <p ng-if="authService.isUserLoggedIn()">
+                                <a href="#/projectUpload/{{list.id}}" class="card-link"><i
+                                        class="fa fa-file-pdf-o"></i></a>
+                                <a href="" ng-click="editData(list)" class="card-link"><i class="fa fa-edit"></i></a>
+                                <a href="" ng-click="delData(list)" class="card-link"><i class="fa fa-trash-o"></i></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-switch-when="detail">
+                <table class="table table-responsive">
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Advisor</th>
+                        <th>Level</th>
+                        <th>Major</th>
+                        <th>Group</th>
+                        <th>Faculty</th>
+                        <th>Year</th>
+                        <th>Budget</th>
+                        <th ng-if="authService.isUserLoggedIn()">Modify</th>
+                    </tr>
+                    <tr ng-repeat="list in projects| filter: query">
+                        <td>{{list.project_id}}</td>
+                        <td><a href="#/project/{{list.id}}"> {{list.title}} </a><br />{{list.abstract}} </td>
+                        <td>{{list.author}}</td>
+                        <td>{{list.advisor}}</td>
+                        <td>{{list.level}}</td>
+                        <td>{{list.major}}</td>
+                        <td>{{list.groups}}</td>
+                        <td>{{list.faculty}}</td>
+                        <td>{{list.year}}</td>
+                        <td>{{list.budget}}</td>
+                        <td ng-if="authService.isUserLoggedIn()">
+                            <a href="" ng-click="editData(list)"><i class="fa fa-edit"></i></a>
+                            <a href="" ng-click="delData(list)"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="div-editbox" style="display:none">
+        <form class="form-horizontal">
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label class="col-form-label">รหัสโครงการ :</label>
+                    <input ng-model="frm.project_id" type="text" class="form-control" placeholder="รหัสโครงการ">
+                </div>
+                <div class="form-group col-md-8">
+                    <label class="col-form-label">ชื่อโครงการ :</label>
+                    <input ng-model="frm.title" type="text" class="form-control" placeholder="ชื่อโครงการ">
+                </div>
+                <div class="form-group col-md-1">
+                    <label class="col-form-label">งบประมาณ :</label>
+                    <input ng-model="frm.budget" type="text" class="form-control" placeholder="งบประมาณ">
+                </div>
+                <div class="form-group col-md-1">
+                    <label class="col-form-label">ปีการศึกษา :</label>
+                    <input ng-model="frm.year" type="text" class="form-control" placeholder="ปีการศึกษา">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label class="col-form-label">บทคัดย่อ :</label>
+                    <textarea ng-model="frm.abstract" class="form-control" rows="4"
+                        placeholder="ระบุบทคัดย่อ"></textarea>
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="col-form-label">คีย์เวิร์ด :</label>
+                    <textarea ng-model="frm.keyword" class="form-control" placeholder="คีย์เวิร์ด" rows></textarea>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-sm-8">
+                    <label class="col-form-label">ผู้จัดทำ :</label>
+                    <input ng-model="frm.author" type="text" class="form-control" placeholder="ผู้จัดทำ">
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-form-label">อาจารย์ที่ปรึกษา :</label>
+                    <input ng-model="frm.advisor" type="text" class="form-control" placeholder="อาจารย์ที่ปรึกษา">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label class="col-form-label">ระดับชั้น :</label>
+                    <input ng-model="frm.level" type="text" class="form-control" placeholder="ระดับชั้น">
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="col-form-label">สาขาวิชา :</label>
+                    <input ng-model="frm.major" type="text" class="form-control" placeholder="สาขาวิชา">
+                </div>
+                <div class="form-group col-md-2">
+                    <label class="col-form-label">กลุ่มเรียน :</label>
+                    <input ng-model="frm.groups" type="text" class="form-control" placeholder="กลุ่มเรียน">
+                </div>
+                <div class="form-group col-md-4">
+                    <label class="col-form-label">คณะ :</label>
+                    <input ng-model="frm.faculty" type="text" class="form-control" placeholder="คณะ">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">แนบไฟล์ :</label>
+                <div class="col-sm-10">
+                    <input ng-model="frm.files" type="file" class="form-control">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-sm-2 col-sm-10">
+                    <button class="btn btn-primary" ng-click="saveData(frm)">Save</button>
+                    <button class="btn btn-warning" ng-click="cancelData()">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</div>

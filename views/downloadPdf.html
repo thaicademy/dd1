@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="row" ng-controller="downloadDetailCtrl">
+        <div class="col-sm-8">
+            <div class="pdf-body">
+                <ng-pdf template-url="views/pdfViewer.html" scale="page-fit" page="1" usecredentials="false"
+                    debug="false">
+                </ng-pdf>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <ul class="list-group list-group-flush" ng-init="getDownloadFiles()">
+                <li class="list-group-item" ng-repeat="list in downloadFiles"><i class="fa fa-file-pdf-o"></i>
+                    <a href="#/downloadPdf/{{downloadID}}/{{list.files}}">{{list.filename}} </a>
+                </li>
+            </ul>
+           
+            <div ng-controller="downloadCtrl">
+                <div ng-init="getDownloads()">
+                    <div class="form-row">
+                        <h3>Downloads</h3>
+                        <input ng-model="query" class="form-control" placeholder="Filter">
+                    </div>
+                    <table class="table table-responsive">
+                        <tr ng-repeat="list in downloads| filter: query">
+                            <td>
+                                <img src="./public/images/nopic.jpg" ng-if="list.filename == ''" class="img-fluid">
+                                <img src='./public/download/title/{{list.filename}}' ng-if="list.filename != ''"
+                                    class="img-fluid">
+                            </td>
+                            <td>
+                                <a href="#/download/{{list.id}}"> {{list.title}}
+                                    <br /> {{list.detail}}</a>
+                                <br />{{list.source}}
+                                <br />{{list.created}}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

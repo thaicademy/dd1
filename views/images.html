@@ -1,0 +1,9 @@
+<div class="container" ng-controller="imagesCtrl">
+    <input ng-model="query" type="text" placeholder="Filter by" autofocus class="form-control col-sm-4">
+    <div class="card-columns">
+        <div class="card" ng-repeat="img in images | filter:query | orderBy: 'modified'">
+            <img ng-src="{{img.src}}" title="{{img.name}}" class="img-fluid" />
+            <p>{{img.name}} {{img.modified}}</p>
+        </div>
+    </div>
+</div>

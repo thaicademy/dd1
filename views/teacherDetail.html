@@ -1,0 +1,90 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div ng-controller="teacherDetailCtrl" ng-init="getTeacher()">
+                <div ng-repeat="list in teacher">
+                    <div class="card mb-3" style="max-width: 640px;">
+                        <div class="row no-gutters">
+                            <div class="col-md-4">
+                                <img src='./public/teacher/title/{{list.photo}}' class="card-img img-fluid"
+                                    ng-if="list.photo != ''">
+                                <img src="./public/images/nopic.jpg" class="card-img img-fluid"
+                                    ng-if="list.photo == ''">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <p class="card-title">รหัสอาจารย์: {{list.teacher_id}}
+                                        ชื่อ นามสกุล: {{list.firstname}} {{list.lastname}}</p>
+                                    <p class="card-text">ตำแหน่งงาน: {{list.position}}</p>
+                                    <p class="card-text">ที่อยู่: {{list.address}}</p>
+                                    <p class="card-text">เบอร์โทร: {{list.tel}}</p>
+                                    <p class="card-text">อีเมลย์: {{list.email}}</p>
+                                    <p class="card-text">
+                                        <!--    <br>URL <a href="http://www.sdtc.ac.th/teachers/{{teacherID}}">http://www.sdtc.ac.th/teachers/{{teacherID}}</a>  -->
+                                    </p>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div ng-controller="teacherCtrl">
+                <h2 class="page-header">{{Title}}</h2>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <button ng-click="CurrentView = 'list'" class="btn btn-default"><i class="fa fa-th"></i>
+                        </button>
+                        <button ng-click="CurrentView = 'detail'" class="btn btn-default"><i class="fa fa-list"></i>
+                        </button>
+                    </div>
+                    <div class="col-sm-8">
+                        <input type="search" ng-model="query" placeholder="ค้นหาคณาจารย์" class="form-control">
+                    </div>
+                </div>
+                <div ng-switch="CurrentView" ng-init="getTeachers()">
+                    <div ng-switch-when="list">
+                        <div ng-repeat="list in teachers| filter: query">
+                            <div class="card mb-3" style="max-width: 480px;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <img src='./public/teacher/title/{{list.photo}}' class="card-img img-fluid"
+                                            ng-if="list.photo != ''">
+                                        <img src="./public/images/nopic.jpg" class="card-img img-fluid"
+                                            ng-if="list.photo == ''">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="card-body">
+                                            <p class="card-title">
+                                                <a href="#/teacher/{{list.teacher_id}}">{{list.firstname}}
+                                                    {{list.lastname}}</a>
+                                            </p>
+                                            <p class="card-text">{{list.position}}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-switch-when="detail">
+                        <table class="table table-responsive">
+                            <tr ng-repeat="list in teachers| filter: query">
+                                <td> <img src='./public/teacher/title/{{list.photo}}' class="card-img-top img-fluid"
+                                        ng-if="list.photo != ''">
+                                    <img src="./public/images/nopic.jpg" class="card-img-top img-fluid"
+                                        ng-if="list.photo == ''"></td>
+                                <td>{{list.teacher_id}}</td>
+                                <td><a href="#/teacher/{{list.teacher_id}}">{{list.firstname}}
+                                        {{list.lastname}}</a>
+                                </td>
+                                <td>{{list.position}}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

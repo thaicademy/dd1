@@ -1,0 +1,9 @@
+<div ng-controller="curriculumCtrl" ng-init="getCurriculum()">
+    <h2 ng-repeat="c in curriculum" ng-if="c.cur_id==curID">{{Title}} : {{c.title}}</h2>
+    <div ng-init="getCurriculumFiles()">
+
+        <div ng-repeat="list in curriculumFiles">
+            <img src="../public/curriculum/data/{{list.files}}" class="img-fluid img-thumbnail">
+        </div>
+    </div>
+</div>

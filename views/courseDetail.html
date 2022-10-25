@@ -1,0 +1,244 @@
+<div class="container" ng-controller="courseDetailCtrl" ng-init="courseData()">
+    <!--div title-->
+    <div ng-repeat="c in course">
+        <div class="row">
+            <div class="col-md-7">
+                <a href="#/course" class="btn btn-light"><i class="fa fa-chevron-left"></i></a>
+                <span style="font-size: 20px; font-weight: 800;">
+                    <a href="#/course/{{c.course_id}}" ng-click="cancelData()"> {{c.course_id}}: {{c.title}} </a>
+                </span>
+                <a href="" class="btn btn-primary pull-right" ng-click="addContent(c);"
+                    ng-if="authService.isUserLoggedIn()">
+                    <span class="fa fa-plus"></span> เพิ่มหัวเรื่อง</a>
+            </div>
+            <div class="col-md-5">
+                <div class="pull-right">
+                    <a href="" class="btn btn-primary" ng-click="addData(c);">
+                        <span class="fa fa-plus"></span> ลงทะเบียนเรียน</a>
+                    <a href="" class="btn btn-primary" ng-click="studentsData(c);">
+                        <span class="fa fa-user"></span> รายชื่อผู้เรียน</a>
+                    <a href="" class="btn btn-primary" ng-click="checkinData(c);" ng-if="authService.isUserLoggedIn()">
+                        <span class="fa fa-check"></span> เช็คชื่อ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--div detail-->
+    <div id="div-detail" class="row">
+        <div class="col-md-4">
+            <ul class="list-group list-group-flush" ng-init="getContents()">
+                <li class="list-group-item"> หัวเรื่อง </li>
+                <li class="list-group-item" ng-repeat="ct in contents">
+                    <a href="#/course/{{ct.course_id}}/{{ct.unit_id}}">{{ct.unit_id}}. {{ct.title}}</a>
+                    <a href="" ng-click="editContent(ct)" ng-if="authService.isUserLoggedIn()">
+                        <span class="fa fa-edit"></span>
+                    </a>
+                    <a href="" ng-click="delContent(ct)" ng-if="authService.isUserLoggedIn()">
+                        <span class="fa fa-trash"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <div ng-repeat="c in course">
+                <div ng-bind-html="c.description"></div>
+            </div>
+        </div>
+    </div>
+    <!--div form-->
+    <div id="div-form" style="display:none">
+        <form class="form-horizontal">
+            <div class="form-row">
+                <div class="form-group col-sm-3">
+                    <label class=" control-label">รหัสวิชา </label>
+                    <input ng-model="frm.course_id" type="text" class="form-control" readonly>
+                </div>
+                <div class="form-group col-sm-9">
+                    <label class="control-label">ชื่อวิชา :</label>
+                    <input ng-model="frm.title" type="text" class="form-control" placeholder="รายวิชา" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-3">
+                    <label class="control-label">รหัสนักศึกษา :</label>
+                    <input ng-model="frm.student_id" type="text" class="form-control" placeholder="รหัสนักศึกษา">
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="control-label">ชื่อ :</label>
+                    <input ng-model="frm.firstname" type="text" class="form-control" placeholder="ระบุชื่อจริง">
+                </div>
+                <div class="form-group col-sm-5">
+                    <label class="control-label">นามสกุล :</label>
+                    <input ng-model="frm.lastname" type="text" class="form-control" placeholder="ระบุนามสกุล">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-3">
+                    <label class="control-label">อีเมล :</label>
+                    <input ng-model="frm.email" type="text" class="form-control" placeholder="ระบุอีเมล">
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class=" control-label">เบอร์โทร :</label>
+                    <input ng-model="frm.phone" type="text" class="form-control" placeholder="ระบุเบอร์โทร">
+                </div>
+                <div class="form-group col-sm-3">
+                    <label class=" control-label">Facebook :</label>
+                    <input ng-model="frm.facebook" type="text" class="form-control" placeholder="Facebook">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class=" control-label">Line :</label>
+                    <input ng-model="frm.idline" type="text" class="form-control" placeholder="Line">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-12">
+                    <label class="control-label">ที่อยู่ :</label>
+                    <textarea ng-model="frm.address" class="form-control" rows="4" placeholder="ระบุที่อยู่"></textarea>
+                </div>
+            </div>
+            <div class="row-sm-12">
+                <button class="btn btn-primary" ng-click="saveData(frm)">Save</button>
+                <button class="btn btn-warning" ng-click="cancelData()">Cancel</button>
+            </div>
+        </form>
+    </div>
+    <!--div show-->
+    <div id="div-show" style="display:none">
+        <div class="row">
+            <div class="col-xs-3 col-md-4 col-sm-6 col-xs-12">
+                <button ng-click="CurrentView = 'list'" class="btn btn-light">
+                    <i class="fa fa-th"></i>
+                </button>
+                <button ng-click="CurrentView = 'detail'" class="btn btn-light">
+                    <i class="fa fa-th-list"></i>
+                </button>
+            </div>
+            <div class="col-xs-3 col-md-4 col-sm-6 col-xs-12 pull-right search">
+                <div class="input-group">
+                    <input type="search" ng-model="query" placeholder="ค้นหา" class="form-control">
+                    <div class="input-group-btn">
+                        <button class="btn btn-light" data-ember-action="1">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-switch="CurrentView">
+            <div ng-switch-when="list" class="card-columns">
+                <div class="card" style="margin: 0px; " ng-repeat="stu in students| filter: query">
+                    <img src='./public/student/title/{{stu.photo}}' ng-if="stu.photo != ''" class="card-img-top">
+                    <img src='./public/images/nopic.jpg' ng-if="stu.photo == ''" class="card-img-top">
+                    <p>
+                        <a href="#/student/{{stu.student_id}}">{{stu.firstname}} {{stu.lastname}}</a>
+                        <br> {{stu.email}} </p>
+                    <p ng-if="authService.isUserLoggedIn()">
+                        <a href="#/studentImage/{{stu.student_id}}" class="fa fa-camera"></a>
+                        <a href="javascript:void(0);" ng-click="editData(stu)" class="fa fa-edit"></a>
+                        <a href="javascript:void(0);" ng-click="deleteData(stu)" class="fa fa-trash"></a>
+                    </p>
+                </div>
+            </div>
+            <div ng-switch-when="detail">
+                <table class="table table-responsive">
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Address</th>
+                        <th>Photo</th>
+                        <th ng-if="authService.isUserLoggedIn()"></th>
+                    </tr>
+                    <tr ng-repeat="stu in students| filter: query">
+                        <td>{{stu.student_id}}</td>
+                        <td>{{stu.firstname}} {{stu.lastname}} </td>
+                        <td>{{stu.email}}</td>
+                        <td>{{stu.phone| substring : 0 : 7 }}</td>
+                        <td>{{stu.address}}</td>
+                        <td>
+                            <img src="./public/student/title/{{stu.photo}}" width="120" class="img-fluid">
+                        </td>
+                        <td ng-if="authService.isUserLoggedIn()">
+                            <a href="#/studentImage/{{stu.student_id}}" class="fa fa-camera"></a>
+                            <a href="javascript:void(0);" class="fa fa-edit" ng-click="editData(stu)"></a>
+                            <a href="javascript:void(0);" class="fa fa-trash" ng-click="deleteData(stu)"></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- div-chktime -->
+    <div id="div-chkin" style="display:none">
+        <table class="table table-bordered">
+            <tr ng-repeat="stu in students">
+                <td width="2%">{{$index + 1}}</td>
+                <td width="5%">
+                    <img src="./public/student/title/{{stu.photo}}" class="img-fluid">
+                </td>
+                <td width="5%"> {{stu.student_id}}</td>
+                <td width="30%">{{stu.firstname}} {{stu.lastname}} </td>
+                <td width="5%">
+                    <div class="form-group">
+                        <input ng-model="frm.course_id" type="hidden" class="form-control">
+                        <input ng-model="frm.student_id" type="hidden" class="form-control">
+                        <select ng-model="frm.status" class="form-control" ng-change="chkinSave(frm)">
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <!-- div-content -->
+    <div id="div-content" style="display:none">
+        <form class="form-horizontal" name="contentForm">
+            <div class="form-row">
+                <div class="form-group col-sm-2">
+                    <label class="control-label">รหัสวิชา</label>
+                    <input type="text" class="form-control" ng-model="frm.course_id" readonly />
+                </div>
+                <div class="form-group col-sm-1">
+                    <label class="control-label">หน่วยที่</label>
+                    <input type="text" class="form-control" ng-model="frm.unit_id" />
+                </div>
+                <div class="form-group col-sm-9">
+                    <label class="control-label">หัวข้อเรื่อง</label>
+                    <input type="text" class="form-control" ng-model="frm.title" />
+                </div>
+            </div>
+            <div class="row-sm-12">
+                <label class="control-label">เนื้อหา</label>
+                <div text-angular ng-model="frm.description" name="demo-editor"
+                    ta-text-editor-class="clearfix border-around container" ta-html-editor-class="border-around">
+                </div>
+                <!--     
+                         <wysiwyg textarea-id="question" 
+                                  textarea-class="form-control"  
+                                  textarea-height="300px" 
+                                  textarea-name="textareaQuestion"
+                                  textarea-required 
+                                  ng-model="frm.description" 
+                                  enable-bootstrap-title="true"
+                                  textarea-menu="menu"
+                                  disabled="disabled">   
+                         </wysiwyg>
+                    -->
+            </div>
+            <div class="row-sm-12">
+                <label class="control-label">ข้อเสนอแนะ</label>
+                <input type="text" class="form-control" ng-model="frm.recommend" />
+            </div>
+            <div class="row-sm-12">
+                <a href="javascript:void(0);" class="btn btn-success" ng-hide="frm.id"
+                    ng-click="saveContent(frm)">Save</a>
+                <a href="javascript:void(0);" class="btn btn-success" ng-hide="!frm.id"
+                    ng-click="updateContent()">Update</a>
+                <a href="javascript:void(0);" class="btn btn-warning" ng-click="cancelData()">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+</div>

@@ -1,0 +1,80 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8">
+            <div ng-controller="downloadDetailCtrl">
+                <div ng-init="getDownload()">
+                    <div ng-repeat="list in download">
+                        <h3 class="page-header">{{list.title}} </h3>
+                        <p>{{list.detail}}</p>
+                    </div>
+                </div>
+                <a href="#/downloadUpload/{{downloadID}}" class="btn btn-primary"
+                    ng-if="authService.isUserLoggedIn()"><i class="fa fa-file"></i> Upload
+                    Files</a>
+                <button ng-click="CurrentView = 'list'" class="btn btn-default"><i class="fa fa-th"></i></button>
+                <button ng-click="CurrentView = 'detail'" class="btn btn-default"><i class="fa fa-th-list"></i></button>
+                <div ng-switch="CurrentView" ng-init="getDownloadFiles()">
+                    <div ng-switch-when="list">
+                        <div class="card-columns">
+                            <div class="card" ng-repeat="list in downloadFiles">
+                                <img src="./public/images/nopic.jpg" ng-if="list.filename == ''" class="img-fluid">
+                                <img src="./public/download/data/{{list.files}}" ng-if="list.filename != ''"
+                                    class="img-fluid">
+                                <a href="#/downloadPdf/{{downloadID}}/{{list.files}}" class="card-link">
+                                    {{list.filename}}  ({{list.files}})</a>
+                                <a href="" ng-click="delFiles(list.files)" class="card-link"><i
+                                        class="fa fa-trash"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-switch-when="detail">
+                        <table class="table table-hover">
+                            <tr>
+                                <th>#</th>
+                                <th>Filename</th>
+                                <th>Modify</th>
+                            </tr>
+                            <tr ng-repeat="list in downloadFiles| filter: query">
+                                <td>
+                                    <img src="./public/images/nopic.jpg" ng-if="list.filename == ''" class="img-fluid">
+                                    <img src='./public/download/data/{{list.files}}' ng-if="list.filename != ''"
+                                        class="img-fluid">
+                                </td>
+                                <td>
+                                    <a ng-href="#/downloadPdf/{{downloadID}}/{{list.files}}">
+                                        {{list.filename}}</a>
+                                </td>
+                                <td>
+                                    <a href="" ng-click="delFiles(list.files)"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4" ng-controller="downloadCtrl">
+            <div ng-init="getDownloads()">
+                <div class="form-row">
+                    <h3>Downloads</h3>
+                    <input ng-model="query" class="form-control" placeholder="Filter">
+                </div>
+                <table class="table table-responsive">
+                    <tr ng-repeat="list in downloads| filter: query">
+                        <td>
+                            <img src="./public/images/nopic.jpg" ng-if="list.filename == ''" class="img-fluid">
+                            <img src='./public/download/title/{{list.filename}}' ng-if="list.filename != ''"
+                                class="img-fluid">
+                        </td>
+                        <td>
+                            <a href="#/download/{{list.id}}"> {{list.title}}
+                                <br /> {{list.detail}}</a>
+                            <br />{{list.source}}
+                            <br />{{list.created}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

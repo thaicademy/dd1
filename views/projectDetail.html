@@ -1,0 +1,76 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8" ng-controller="projectDetailCtrl">
+            <div ng-init="getProject()">
+                <div ng-repeat="list in project">
+                    <h3>{{list.title}} </h3>
+                    <p>{{list.abstract}}</p>
+                    <p>{{list.author}}</p>
+                </div>
+                <a href="#/projectUpload/{{projectID}}" class="btn btn-primary" ng-if="authService.isUserLoggedIn()"><i
+                        class="fa fa-file-pdf-o"></i>
+                    Upload Files</a>
+                <button ng-click="CurrentView = 'list'" class="btn btn-default"><i class="fa fa-th"></i></button>
+                <button ng-click="CurrentView = 'detail'" class="btn btn-default"><i class="fa fa-th-list"></i></button>
+                <div ng-switch="CurrentView" ng-init="getProjectFiles()">
+                    <div ng-switch-when="list">
+                        <div class="card-columns">
+                            <div class="card" ng-repeat="list in projectFiles">
+                                <img src="./public/images/nopic.jpg" ng-if="list.filename == ''" class="img-fluid">
+                                <img src="./public/project/data/{{list.files}}" ng-if="list.filename != ''"
+                                    class="img-fluid">
+                                <a ng-href="#/projectPdf/{{projectID}}/{{list.files}}" class="card-link">
+                                    {{list.filename}} {{list.files}}</a>
+                                <a href="" ng-click="delFiles(list.files)" class="card-link"
+                                    ng-if="authService.isUserLoggedIn()"><i class="fa fa-trash"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-switch-when="detail">
+                        <table class="table table-responsive">
+                            <tr>
+                                <th>#</th>
+                                <th>Filename</th>
+                                <th>Modify</th>
+                            </tr>
+                            <tr ng-repeat="list in projectFiles| filter: query">
+                                <td>
+                                    <img src="./public/images/nopic.jpg" ng-if="list.filename == ''" class="img-fluid">
+                                    <img src='./public/project/data/{{list.files}}' ng-if="list.filename != ''"
+                                        class="img-fluid">
+                                </td>
+                                <td>
+                                    <a ng-href="#/projectPdf/{{projectID}}/{{list.files}}">{{list.filename}} {{}}</a>
+                                </td>
+                                <td>
+                                    <a href="" ng-click="delFiles(list.files)"><i class="fa fa-trash"></i></a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4" ng-controller="projectCtrl">
+            <div ng-init="getProjects()">
+                <h3>Projects</h3>
+                <input ng-model="query" class="form-control" placeholder="Filter">
+                <table class="table table-responsive">
+                    <tr ng-repeat="list in projects| filter: query">
+                        <td>
+                            <img src="./public/images/nopic.jpg" ng-if="list.filename == ''" class="img-fluid">
+                            <img src='./public/project/title/{{list.filename}}' ng-if="list.filename != ''"
+                                class="img-fluid">
+                        </td>
+                        <td>
+                            <p><a href="#/project/{{list.id}}"> {{list.title}}</a></p>
+                            <p>{{list.abstract}} </p>
+                            <p>{{list.author}}</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

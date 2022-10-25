@@ -1,0 +1,49 @@
+<div class="container-fluid">
+    <div ng-controller="activityDetailCtrl">
+        <div class="card mb-3" ng-init="getActivity()">
+            <div class="row no-gutters" ng-repeat="list in activity">
+                <div class="col-md-3">
+                    <img src="./public/activity/title/{{list.photo}}" class="card-img">
+                </div>
+                <div class="col-md-9">
+                    <div class="card-body">
+                        <h5 class="card-title">{{list.title}}</h5>
+                        <p class="card-text">{{list.detail}}</p>
+                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button ng-click="CurrentView = 'list'" class="btn btn-default"><i class="fa fa-th"></i></button>
+        <button ng-click="CurrentView = 'detail'" class="btn btn-default"><i class="fa fa-th-list"></i></button>
+        <a href="#/activityUpload/{{activityID}}" class="btn btn-primary" ng-if="authService.isUserLoggedIn()"><i class="fa fa-camera"></i> Upload Photo</a>
+        <div ng-init="getActivityImage()">
+            <div ng-switch="CurrentView">
+                <div ng-switch-when="list">
+                    <div class="card-columns">
+                        <div class="card" ng-repeat="list in activityImage">
+                            <img src='./public/activity/small/{{list.photo}}' class="card-img-top img-fluid"><br>
+                            <a href="" ng-click="delImage(list.photo)" class="card-link" ng-if="authService.isUserLoggedIn()"><i
+                                    class="fa fa-trash-o"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div ng-switch-when="detail">
+                    <table class="table table-responsive">
+                        <tr>
+                            <th>Photo</th>
+                        </tr>
+                        <tr ng-repeat="list in activityImage| filter: query">
+                            <td>
+                                <img src='./public/activity/large/{{list.photo}}' class="img-fluid">
+                                <p>ID: {{list.id}} View: {{list.views}} Date : {{list.created}}
+                                    <a href="" ng-click="delImage(list.photo)" ng-if="authService.isUserLoggedIn()"><i class="fa fa-trash-o"></i></a>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,107 @@
+<div ng-controller="userCtrl" ng-init="getUsers()">
+    <h2>สมัครสมาชิก</h2>
+    <!--     <div class="row">
+        <div class="col-sm-6">
+            <a href="" class="btn btn-primary" ng-click="newData()" ng-if="authService.isUserLoggedIn()"><i
+                    class="fa fa-plus-circle"></i>
+                ป้อนข้อมูลอาจารย์</a>
+            <button ng-click="CurrentView = 'list'" class="btn btn-default"><i class="fa fa-th"></i> </button>
+            <button ng-click="CurrentView = 'detail'" class="btn btn-default"><i class="fa fa-list"></i> </button>
+        </div>
+        <div class="col-sm-6">
+            <input type="search" ng-model="query" placeholder="ค้นหาคณาจารย์" class="form-control">
+        </div>
+    </div> -->
+    <div id="div-datatable">
+        <div ng-switch="CurrentView">
+            <div ng-switch-when="list">
+                <div class="card-columns">
+                    <div class="card" ng-repeat="list in users| filter: query">
+                        <img src='./public/user/title/{{list.photo}}' class="card-img img-fluid"
+                            ng-if="list.photo != ''">
+                        <img src="./public/images/nopic.jpg" class="card-img-top img-fluid" ng-if="list.photo == ''">
+                        <div class="card-block">
+                            <p class="card-title"> <a href="#/user/{{list.id}}">{{list.firstname}}
+                                    {{list.lastname}}</a> </p>
+                            <p class="card-text"> {{list.role}} </p>
+                            <p ng-if="authService.isUserLoggedIn()">
+                                <a href="#/userTitleUpload/{{list.id}}" class="card-link"><i
+                                        class="fa fa-camera"></i></a>
+                                <a href="" ng-click="editData(list)" class="card-link"><i class="fa fa-edit"></i></a>
+                                <a href="" ng-click="delData(list)" class="card-link"><i class="fa fa-trash-o"></i></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-switch-when="detail">
+                <table class="table table-hover">
+                    <tr>
+                        <th></th>
+                        <th>ID.</th>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th ng-if="authService.isUserLoggedIn()">Modify</th>
+                    </tr>
+                    <tr ng-repeat="list in users| filter: query">
+                        <td>
+                            <img src='./public/user/title/{{list.photo}}' class="card-img-top img-fluid"
+                                ng-if="list.photo != ''">
+                            <img src="./public/images/nopic.jpg" class="card-img-top img-fluid"
+                                ng-if="list.photo == ''">
+                        </td>
+                        <td>{{list.id}}</td>
+                        <td><a href="#/user/{{list.id}}">{{list.firstname}} {{list.lastname}}</a></td>
+                        <td>{{list.role}}</td>
+                        <td ng-if="authService.isUserLoggedIn()">
+                            <a href="#/userTitleUpload/{{list.id}}" class="card-link"><i class="fa fa-camera"></i></a>
+                            <a href="" ng-click="editData(list)" class="card-link"><i class="fa fa-edit"></i></a>
+                            <a href="" ng-click="delData(list)" class="card-link"><i class="fa fa-trash-o"></i></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="div-editbox" style="display:none">
+        <form class="form-horizontal">
+            <div class="form-row">
+                <div class="form-group col-sm-4">
+                    <label class=" col-form-label">ชื่อ :</label>
+                    <input ng-model="frm.firstname" type="text" class="form-control" placeholder="ชื่อ">
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-form-label">นามสกุล :</label>
+                    <input ng-model="frm.lastname" type="text" class="form-control" placeholder="นามสกุล">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-4">
+                    <label class="col-form-label">เบอร์โทรศัพท์ :</label>
+                    <input ng-model="frm.tel" type="text" class="form-control" placeholder="เบอร์โทรศัพท์">
+                </div>
+                <div class="form-group col-sm-4">
+                    <label class="col-form-label">อีเมล์ :</label>
+                    <input ng-model="frm.email" type="text" class="form-control" placeholder="อีเมล์">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-sm-2">
+                    <label class="col-form-label">Username :</label>
+                    <input ng-model="frm.username" type="text" class="form-control" placeholder="Username">
+                </div>
+                <div class="form-group col-sm-2">
+                    <label class="control-label">Password</label>
+                   
+                        <input ng-model="frm.password" type="text" class="form-control" placeholder="Password">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-sm-2 col-sm-10">
+                    <button class="btn btn-primary" ng-click="saveData(frm)">Save</button>
+                    <button class="btn btn-warning" ng-click="cancelData()">Cancel</button>
+                </div>
+            </div>
+        </form> 
+    </div>
+</div>

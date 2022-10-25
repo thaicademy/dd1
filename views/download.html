@@ -1,0 +1,93 @@
+<div ng-controller="downloadCtrl" ng-init="getDownloads()">
+    <h2>ดาวน์โหลด</h2>
+    <div class="row">
+        <div class="col-sm-6">
+            <button class="btn btn-primary" ng-click="newData()"
+                ng-if="authService.isUserLoggedIn()">เพิ่มดาวน์โหลด</button>
+            <button ng-click="CurrentView = 'list'" class="btn btn-default"><i class="fa fa-th"></i></button>
+            <button ng-click="CurrentView = 'detail'" class="btn btn-default"><i class="fa fa-list"></i> </button>
+        </div>
+        <div class="col-sm-6">
+            <input type="search" ng-model="query" placeholder="Search" class="form-control">
+        </div>
+    </div>
+    <div id="div-datatable">
+        <div ng-switch="CurrentView">
+            <div ng-switch-when="list">
+                <div class="card-columns">
+                    <div class="card" ng-repeat="list in downloads| filter: query">
+                        <img src='./public/download/title/{{list.filename}}' class="card-img img-fluid"
+                            ng-if="list.filename != ''">
+                        <img src="./public/images/nopic.jpg" class="card-img img-fluid" ng-if="list.filename == ''">
+                        <div class="card-block">
+                            <p class="card-title"> <a href="#/download/{{list.id}}">{{list.title}}</a> </p>
+                            <p class="card-text"> {{list.detail}} </p>
+                            <p ng-if="authService.isUserLoggedIn()">
+                                <a href="#/downloadUpload/{{list.id}}" class="card-link"><i
+                                        class="fa fa-file-pdf-o"></i></a>
+                                <a href="" ng-click="editData(list)" class="card-link"><i class="fa fa-edit"></i></a>
+                                <a href="" ng-click="delData(list)" class="card-link"><i class="fa fa-trash-o"></i></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div ng-switch-when="detail">
+                <table class="table table-hover">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Source</th>
+                        <th>Date</th>
+                        <th ng-if="authService.isUserLoggedIn()">Modify</th>
+                    </tr>
+                    <tr ng-repeat="list in downloads| filter: query">
+                        <td>
+                            <img src="../public/images/nopic.jpg" ng-if="list.filename == ''" class="img-fluid"
+                                width="90">
+                            <img src='../public/download/title/{{list.filename}}' ng-if="list.filename != ''"
+                                class="img-fluid">
+                        </td>
+                        <td><a href="#/download/{{list.id}}"> {{list.title}} <br />{{list.detail}} </a></td>
+                        <td>{{list.source}}</td>
+                        <td>{{list.created}}</td>
+                        <td ng-if="authService.isUserLoggedIn()">
+                            <a href="#/downloadUpload/{{list.id}}"><i class="fa fa-file-pdf-o"></i></a>
+                            <a href="" ng-click="editData(list)"><i class="fa fa-edit"></i></a>
+                            <a href="" ng-click="delData(list)"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="div-editbox" style="display:none">
+        <form class="form-horizontal">
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">หัวเรื่อง :</label>
+                <div class="col-sm-10">
+                    <input ng-model="frm.title" type="text" class="form-control" placeholder="ระบุหัวเรื่อง">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">รายละอียด :</label>
+                <div class="col-sm-10">
+                    <textarea ng-model="frm.detail" class="form-control" rows="4"
+                        placeholder="ระบุรายละเอียด"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">แหล่งที่มา :</label>
+                <div class="col-sm-10">
+                    <input ng-model="frm.source" type="text" class="form-control" placeholder="แหล่งให้ข้อมูล">
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="offset-sm-2 col-sm-10">
+                    <button class="btn btn-primary" ng-click="saveData(frm)">Save</button>
+                    <button class="btn btn-warning" ng-click="cancelData()">Cancel</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

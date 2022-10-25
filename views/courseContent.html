@@ -1,0 +1,82 @@
+<div ng-controller="contentCtrl" ng-init="getCourse()">
+    <div class="col-xs-12" ng-repeat="c in course">
+        <span style="font-size: 20px; font-weight: 800; ">
+            <a href="#/course/{{c.course_id}}" ng-click="cancelData()"> {{c.course_id}} : {{c.title}} </a>
+        </span>
+    </div>
+    <div class="row no-gutters">
+        <div class="col-sm-3">
+            <ul class="list-group list-group-flush" ng-init="getContents()">
+                <li class="list-group-item">หัวเรื่อง </li>
+                <li class="list-group-item" ng-repeat="ct in contents">
+                    <a href="#/course/{{ct.course_id}}/{{ct.unit_id}}"> {{ct.unit_id}}. {{ct.title}} </a>
+                    <a href="" ng-click="editContent(ct)" ng-if="authService.isUserLoggedIn()">
+                        <span class="fa fa-edit"></span>
+                    </a>
+                    <a href="" ng-click="delContent(ct)" ng-if="authService.isUserLoggedIn()">
+                        <span class="fa fa-trash"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-9">
+            <!-- div-detail -->
+            <div id="div-detail" ng-init="getContent()">
+                <div ng-repeat="ct in content">
+                    <h2 class="page-header">{{ct.title}}</h2>
+                    <div ng-bind-html="ct.description"></div>
+                    <p> {{ct.recommend}} </p>
+                </div>
+            </div>
+            <!-- div-content -->
+            <div id="div-content" style="display:none">
+                <form class="form-horizontal">
+                    <div class="form-row">
+                        <div class="form-group col-sm-2">
+                            <label class=" control-label">รหัสวิชา</label>
+                            <input type="text" class="form-control" name="course_id" ng-model="frm.course_id" />
+                        </div>
+                        <div class="form-group col-sm-1">
+                            <label class=" control-label">หน่วยที่</label>
+                            <input type="text" class="form-control" ng-model="frm.unit_id" />
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <label class="control-label">หัวเรื่อง</label>
+                            <input type="text" class="form-control" ng-model="frm.title" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 ">
+                            <label class="control-label">เนื้อหา</label>
+                            <div text-angular ng-model="frm.description" name="demo-editor"
+                                ta-text-editor-class="clearfix border-around container"
+                                ta-html-editor-class="border-around"></div>
+                            <!-- 
+                      <wysiwyg textarea-id="question" 
+                                 textarea-class="form-control"  
+                                 textarea-height="300px" 
+                                 textarea-name="textareaQuestion"
+                                 textarea-required 
+                                 ng-model="frm.description" 
+                                 enable-bootstrap-title="true"
+                                 textarea-menu="menu"
+                                 disabled="disabled">   
+                        </wysiwyg>
+                       -->
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-sm-12 ">
+                            <label class="control-label">ข้อเสนอแนะ</label>
+                            <input type="text" class="form-control" ng-model="frm.recommend" />
+                        </div>
+                    </div>
+                    <div class="row-sm-12">
+                        <a href="javascript:void(0);" class="btn btn-success" ng-click="saveContent(frm)">Save</a>
+                        <a href="javascript:void(0);" class="btn btn-warning" ng-click="cancelData()">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
